@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getArticleBySlug, getAllArticles, getArticlesByCategory, getArticlesBySlugs } from "@/lib/articles";
+import {
+  getArticleBySlug,
+  getAllArticles,
+  getArticlesByCategory,
+  getArticlesBySlugs,
+} from "@/lib/articles";
 import { getCategoryBySlug } from "@/lib/categories";
 import CategoryBadge from "@/components/CategoryBadge";
 import ArticleCard from "@/components/ArticleCard";
@@ -32,30 +37,51 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString("ja-JP", {
-    year: "numeric", month: "long", day: "numeric",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 }
 
+function extractHeadings(
+  content: string
+): { text: string; id: string }[] {
+  const matches = content.match(/^## (.+)$/gm);
+  if (!matches) return [];
+  return matches.map((m, i) => ({
+    text: m.replace(/^## /, ""),
+    id: `section-${i}`,
+  }));
+}
+
 function renderMarkdown(content: string): string {
+  let h2i = 0;
   return content
     .trim()
-    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
+    .replace(/^## (.+)$/gm, (_, t) => `<h2 id="section-${h2i++}">${t}</h2>`)
     .replace(/^### (.+)$/gm, "<h3>$1</h3>")
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/`([^`]+)`/g, "<code>$1</code>")
     .replace(/```[\w]*\n([\s\S]*?)```/g, "<pre><code>$1</code></pre>")
     .replace(/^\| (.+) \|$/gm, (_, row) => {
-      const cells = row.split(" | ").map((c: string) => `<td>${c.trim()}</td>`).join("");
+      const cells = row
+        .split(" | ")
+        .map((c: string) => `<td>${c.trim()}</td>`)
+        .join("");
       return `<tr>${cells}</tr>`;
     })
-    .replace(/(<tr>[\s\S]*?<\/tr>)/g, (match) => match.includes("---") ? "" : match)
-    .replace(/(<tr>.*<\/tr>\s*)+/g, (match) => `<table>${match}</table>`)
+    .replace(/(<tr>[\s\S]*?<\/tr>)/g, (m) =>
+      m.includes("---") ? "" : m
+    )
+    .replace(/(<tr>.*<\/tr>\s*)+/g, (m) => `<table>${m}</table>`)
+    .replace(/^---+$/gm, "<hr/>")
     .replace(/^- (.+)$/gm, "<li>$1</li>")
-    .replace(/(<li>.*<\/li>\s*)+/g, (match) => `<ul>${match}</ul>`)
+    .replace(/(<li>.*<\/li>\s*)+/g, (m) => `<ul>${m}</ul>`)
     .replace(/^\d+\. (.+)$/gm, "<li>$1</li>")
     .split(/\n\n+/)
     .map((block) => {
-      if (/^<(h[23]|ul|ol|pre|table)/.test(block)) return block;
+      if (/^<(h[23]|ul|ol|pre|table|blockquote|hr)/.test(block))
+        return block;
       return `<p>${block.replace(/\n/g, "<br/>")}</p>`;
     })
     .join("\n");
@@ -67,23 +93,38 @@ export default async function ArticlePage({ params }: Props) {
   if (!article) notFound();
 
   const category = getCategoryBySlug(article.category);
+  const headings = extractHeadings(article.content);
   const related = article.relatedSlugs
     ? getArticlesBySlugs(article.relatedSlugs)
-    : getArticlesByCategory(article.category).filter((a) => a.slug !== slug).slice(0, 3);
+    : getArticlesByCategory(article.category)
+        .filter((a) => a.slug !== slug)
+        .slice(0, 3);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-3xl mx-auto px-5 py-10">
       <div className="max-w-2xl mx-auto">
-
         {/* Breadcrumb */}
-        <nav className="text-xs text-gray-400 mb-5 flex items-center gap-1.5 flex-wrap">
-          <Link href="/" className="hover:text-blue-500 transition-colors">ホーム</Link>
-          <span>›</span>
-          <Link href="/articles" className="hover:text-blue-500 transition-colors">記事一覧</Link>
+        <nav className="text-xs text-neutral-400 mb-8 flex items-center gap-1.5">
+          <Link
+            href="/"
+            className="hover:text-neutral-900 transition-colors"
+          >
+            ホーム
+          </Link>
+          <span>/</span>
+          <Link
+            href="/articles"
+            className="hover:text-neutral-900 transition-colors"
+          >
+            記事一覧
+          </Link>
           {category && (
             <>
-              <span>›</span>
-              <Link href={`/categories/${category.slug}`} className="hover:text-blue-500 transition-colors">
+              <span>/</span>
+              <Link
+                href={`/categories/${category.slug}`}
+                className="hover:text-neutral-900 transition-colors"
+              >
                 {category.name}
               </Link>
             </>
@@ -91,37 +132,62 @@ export default async function ArticlePage({ params }: Props) {
         </nav>
 
         {/* Article header */}
-        <header className="bg-white rounded-md border border-blue-100 p-5 sm:p-7 mb-4">
+        <header className="mb-8 pb-8 border-b border-neutral-200">
           <div className="mb-3">
             <CategoryBadge categorySlug={article.category} />
           </div>
-          <h1 className="text-xl sm:text-2xl font-black text-gray-900 leading-snug mb-3">
+          <h1 className="text-xl sm:text-2xl font-bold text-neutral-900 leading-snug mb-3">
             {article.title}
           </h1>
-          <p className="text-gray-600 text-sm leading-relaxed mb-4">{article.description}</p>
-          <div className="flex items-center gap-3 text-xs text-gray-400 pt-3 border-t border-blue-50">
-            <time dateTime={article.publishedAt}>📅 {formatDate(article.publishedAt)}</time>
-            <span>·</span>
-            <span>⏱ {article.readTime}分で読める</span>
+          <p className="text-sm text-neutral-500 leading-relaxed mb-4">
+            {article.description}
+          </p>
+          <div className="flex items-center gap-3 text-xs text-neutral-400">
+            <time dateTime={article.publishedAt}>
+              {formatDate(article.publishedAt)}
+            </time>
+            <span>&middot;</span>
+            <span>{article.readTime}分で読める</span>
           </div>
         </header>
 
+        {/* TOC */}
+        {headings.length > 2 && (
+          <nav className="border border-neutral-200 p-5 mb-10">
+            <p className="text-[11px] font-semibold text-neutral-400 uppercase tracking-widest mb-3">
+              目次
+            </p>
+            <ol className="space-y-1.5">
+              {headings.map((h, i) => (
+                <li key={h.id}>
+                  <a
+                    href={`#${h.id}`}
+                    className="text-sm text-neutral-500 hover:text-neutral-900 transition-colors"
+                  >
+                    {i + 1}. {h.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
+
         {/* Article body */}
-        <div className="bg-white rounded-md border border-blue-100 p-5 sm:p-7">
-          <article
-            className="prose-article"
-            dangerouslySetInnerHTML={{ __html: renderMarkdown(article.content) }}
-          />
-        </div>
+        <article
+          className="prose-article"
+          dangerouslySetInnerHTML={{
+            __html: renderMarkdown(article.content),
+          }}
+        />
 
         {/* Tags */}
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-10 pt-6 border-t border-neutral-200 flex flex-wrap gap-2">
           {article.tags.map((tag) => (
             <span
               key={tag}
-              className="text-xs bg-blue-50 text-blue-600 font-semibold px-2.5 py-1 border border-blue-100"
+              className="text-xs text-neutral-400 font-medium px-2 py-0.5 border border-neutral-200"
             >
-              #{tag}
+              {tag}
             </span>
           ))}
         </div>
@@ -129,11 +195,11 @@ export default async function ArticlePage({ params }: Props) {
 
       {/* Related articles */}
       {related.length > 0 && (
-        <section className="max-w-2xl mx-auto mt-10">
-          <h2 className="text-base font-black text-gray-800 mb-4">
-            👀 {category?.name}の関連記事
+        <section className="max-w-2xl mx-auto mt-12 pt-8 border-t border-neutral-200">
+          <h2 className="text-[11px] font-semibold text-neutral-400 uppercase tracking-widest mb-5">
+            関連記事
           </h2>
-          <div className="space-y-3">
+          <div className="divide-y divide-neutral-100">
             {related.map((a) => (
               <ArticleCard key={a.slug} article={a} />
             ))}
@@ -141,10 +207,10 @@ export default async function ArticlePage({ params }: Props) {
         </section>
       )}
 
-      <div className="mt-8 text-center">
+      <div className="max-w-2xl mx-auto mt-10 pt-6 border-t border-neutral-200 text-center">
         <Link
           href="/articles"
-          className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold px-7 py-3.5 text-sm transition-colors shadow-sm rounded-md"
+          className="text-sm text-neutral-400 hover:text-neutral-900 transition-colors font-medium"
         >
           ← 記事一覧に戻る
         </Link>

@@ -11,7 +11,7 @@ export default function CategoryBadge({ categorySlug, linkable = true }: Props) 
   if (!category) return null;
 
   const badge = (
-    <span className={`inline-block text-xs font-bold px-2 py-0.5 rounded-sm ${category.color}`}>
+    <span className={`inline-block text-[11px] font-semibold px-2 py-0.5 ${category.color}`}>
       {category.name}
     </span>
   );

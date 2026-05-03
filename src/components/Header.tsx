@@ -7,33 +7,23 @@ import { useState } from "react";
 const navLinks = [
   { href: "/articles",   label: "記事一覧" },
   { href: "/categories", label: "カテゴリ" },
-  { href: "/contact",    label: "お問い合わせ" },
+  { href: "/about",      label: "About" },
 ];
-
-function LogoIcon() {
-  return (
-    <svg width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <rect x="1" y="1" width="30" height="30" rx="4" fill="#1d4ed8" />
-      <path d="M18 5L10 17h7l-3 10 12-14h-7l3-8z" fill="white" />
-    </svg>
-  );
-}
 
 export default function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
-      <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <LogoIcon />
-          <div className="leading-none">
-            <span className="text-[10px] font-medium text-gray-400 block mb-0.5 tracking-wide">大学生の</span>
-            <span className="font-black text-gray-900 text-sm block leading-none tracking-tight">
-              AI<span className="text-blue-700">活用ラボ</span>
-            </span>
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-neutral-200">
+      <div className="max-w-3xl mx-auto px-5 h-14 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2 hover:opacity-70 transition-opacity">
+          <div className="w-7 h-7 bg-neutral-900 rounded-[6px] flex items-center justify-center">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M9 1L5 9h4l-2 6 7-8H8l2-6z" fill="white" />
+            </svg>
           </div>
+          <span className="font-bold text-neutral-900 text-[13px] tracking-tight">AI活用ラボ</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
@@ -41,10 +31,10 @@ export default function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className={`px-3 py-1.5 text-sm transition-colors ${
+              className={`px-3 py-1.5 text-[13px] transition-colors ${
                 pathname.startsWith(link.href)
-                  ? "text-blue-700 font-bold"
-                  : "text-gray-500 font-medium hover:text-gray-900"
+                  ? "text-neutral-900 font-semibold"
+                  : "text-neutral-400 hover:text-neutral-900"
               }`}
             >
               {link.label}
@@ -53,30 +43,30 @@ export default function Header() {
         </nav>
 
         <button
-          className="md:hidden w-9 h-9 flex items-center justify-center text-gray-600 hover:text-gray-900 transition-colors"
+          className="md:hidden w-9 h-9 flex items-center justify-center text-neutral-500 hover:text-neutral-900 transition-colors"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="メニューを開く"
         >
-          <div className="w-5 h-4 flex flex-col justify-between">
-            <span className={`block h-0.5 bg-current transition-transform origin-top-left ${menuOpen ? "rotate-45 translate-x-px" : ""}`} />
-            <span className={`block h-0.5 bg-current transition-opacity ${menuOpen ? "opacity-0" : ""}`} />
-            <span className={`block h-0.5 bg-current transition-transform origin-bottom-left ${menuOpen ? "-rotate-45 translate-x-px" : ""}`} />
+          <div className="w-[18px] h-3.5 flex flex-col justify-between">
+            <span className={`block h-px bg-current transition-transform origin-top-left ${menuOpen ? "rotate-45 translate-x-px" : ""}`} />
+            <span className={`block h-px bg-current transition-opacity ${menuOpen ? "opacity-0" : ""}`} />
+            <span className={`block h-px bg-current transition-transform origin-bottom-left ${menuOpen ? "-rotate-45 translate-x-px" : ""}`} />
           </div>
         </button>
       </div>
 
       {menuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100">
-          <nav className="max-w-4xl mx-auto px-4 py-2 flex flex-col">
+        <div className="md:hidden bg-white border-t border-neutral-100">
+          <nav className="max-w-3xl mx-auto px-5 py-3 flex flex-col">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className={`px-3 py-3 text-sm font-medium transition-colors border-b border-gray-50 last:border-0 ${
+                className={`px-2 py-3 text-sm transition-colors border-b border-neutral-50 last:border-0 ${
                   pathname.startsWith(link.href)
-                    ? "text-blue-700 font-bold"
-                    : "text-gray-700 hover:text-gray-900"
+                    ? "text-neutral-900 font-semibold"
+                    : "text-neutral-500 hover:text-neutral-900"
                 }`}
               >
                 {link.label}

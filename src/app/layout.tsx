@@ -44,7 +44,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" className="h-full">
-      <body className="min-h-full flex flex-col bg-[#f0f7ff]">
+      <body className="min-h-full flex flex-col bg-white">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
