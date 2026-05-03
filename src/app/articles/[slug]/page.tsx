@@ -63,6 +63,7 @@ function renderMarkdown(content: string): string {
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/`([^`]+)`/g, "<code>$1</code>")
     .replace(/```[\w]*\n([\s\S]*?)```/g, "<pre><code>$1</code></pre>")
+    .replace(/^\|[-\s:|]+\|$/gm, "")
     .replace(/^\| (.+) \|$/gm, (_, row) => {
       const cells = row
         .split(" | ")
