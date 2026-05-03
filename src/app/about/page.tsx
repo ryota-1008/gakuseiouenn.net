@@ -24,14 +24,14 @@ export default function AboutPage() {
               🎓
             </div>
             <div>
-              <p className="font-black text-gray-800 text-lg">りょうた</p>
+              <p className="font-black text-gray-800 text-lg">Na(りた</p>
               <p className="text-sm text-blue-600 font-semibold">大学生 · AI活用研究中</p>
               <p className="text-xs text-gray-400 mt-0.5">経済学部 / 都内の大学に在学中</p>
             </div>
           </div>
 
           <p className="text-sm text-gray-600 leading-relaxed mb-4">
-            はじめまして！大学生AI活用ラボを運営しているりょうたです。
+            はじめまして！大学生AI活用ラボを運営しているNa(りたです。
             普段はゼミ・バイト・就活を並行しながら、AIツールを使った効率化を日々研究しています。
           </p>
           <p className="text-sm text-gray-600 leading-relaxed">
