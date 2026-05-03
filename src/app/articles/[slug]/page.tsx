@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getArticleBySlug, getAllArticles, getArticlesByCategory } from "@/lib/articles";
+import { getArticleBySlug, getAllArticles, getArticlesByCategory, getArticlesBySlugs } from "@/lib/articles";
 import { getCategoryBySlug } from "@/lib/categories";
 import CategoryBadge from "@/components/CategoryBadge";
 import ArticleCard from "@/components/ArticleCard";
@@ -67,7 +67,9 @@ export default async function ArticlePage({ params }: Props) {
   if (!article) notFound();
 
   const category = getCategoryBySlug(article.category);
-  const related = getArticlesByCategory(article.category).filter((a) => a.slug !== slug).slice(0, 3);
+  const related = article.relatedSlugs
+    ? getArticlesBySlugs(article.relatedSlugs)
+    : getArticlesByCategory(article.category).filter((a) => a.slug !== slug).slice(0, 3);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">

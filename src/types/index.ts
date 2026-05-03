@@ -16,4 +16,5 @@ export type Article = {
   readTime: number;
   featured?: boolean;
   tags: string[];
+  relatedSlugs?: string[];
 };
