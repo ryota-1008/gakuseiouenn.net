@@ -13,6 +13,9 @@ import ArticleCard from "@/components/ArticleCard";
 
 type Props = { params: Promise<{ slug: string }> };
 
+const siteUrl = "https://gakuseiouenn.net";
+const siteName = "大学生AI活用ラボ";
+
 export async function generateStaticParams() {
   return getAllArticles().map((a) => ({ slug: a.slug }));
 }
@@ -125,6 +128,10 @@ function renderMarkdown(content: string): string {
     .join("\n");
 }
 
+function safeJsonLd(value: unknown): string {
+  return JSON.stringify(value).replace(/</g, "\\u003c");
+}
+
 function getArticleTakeaways(slug: string): string[] {
   const takeaways: Record<string, string[]> = {
     "best-ai-tools-for-students": [
@@ -186,6 +193,74 @@ export default async function ArticlePage({ params }: Props) {
   const category = getCategoryBySlug(article.category);
   const headings = extractHeadings(article.content);
   const takeaways = getArticleTakeaways(article.slug);
+  const articleUrl = `${siteUrl}/articles/${article.slug}`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BlogPosting",
+        "@id": `${articleUrl}#article`,
+        headline: article.title,
+        description: article.description,
+        url: articleUrl,
+        mainEntityOfPage: articleUrl,
+        datePublished: article.publishedAt,
+        dateModified: article.updatedAt ?? article.publishedAt,
+        inLanguage: "ja",
+        articleSection: category?.name ?? article.category,
+        keywords: article.tags,
+        author: {
+          "@type": "Person",
+          name: "理工学部の大学生",
+          url: `${siteUrl}/about`,
+        },
+        publisher: {
+          "@type": "Organization",
+          name: siteName,
+          url: siteUrl,
+        },
+        isPartOf: {
+          "@type": "Blog",
+          name: siteName,
+          url: siteUrl,
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${articleUrl}#breadcrumb`,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "ホーム",
+            item: siteUrl,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "記事一覧",
+            item: `${siteUrl}/articles`,
+          },
+          ...(category
+            ? [
+                {
+                  "@type": "ListItem",
+                  position: 3,
+                  name: category.name,
+                  item: `${siteUrl}/categories/${category.slug}`,
+                },
+              ]
+            : []),
+          {
+            "@type": "ListItem",
+            position: category ? 4 : 3,
+            name: article.title,
+            item: articleUrl,
+          },
+        ],
+      },
+    ],
+  };
   const related = article.relatedSlugs
     ? getArticlesBySlugs(article.relatedSlugs)
     : getArticlesByCategory(article.category)
@@ -194,6 +269,10 @@ export default async function ArticlePage({ params }: Props) {
 
   return (
     <div className="max-w-4xl mx-auto px-5 py-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
+      />
       <div className="max-w-2xl mx-auto">
         <nav className="text-xs text-neutral-400 mb-8 flex items-center gap-1.5">
           <Link href="/" className="hover:text-neutral-900 transition-colors">ホーム</Link>
