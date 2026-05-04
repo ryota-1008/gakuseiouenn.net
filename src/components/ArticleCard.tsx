@@ -8,10 +8,10 @@ type Props = {
 };
 
 const categoryTopBorder: Record<string, string> = {
-  chatgpt:     "border-t-blue-500",
-  study:       "border-t-emerald-500",
-  career:      "border-t-amber-500",
-  tools:       "border-t-violet-500",
+  chatgpt: "border-t-blue-500",
+  study: "border-t-emerald-500",
+  career: "border-t-amber-500",
+  tools: "border-t-violet-500",
   programming: "border-t-slate-400",
 };
 
@@ -36,7 +36,7 @@ export default function ArticleCard({ article, featured = false }: Props) {
           <h2 className="text-[15px] font-bold text-neutral-900 group-hover:text-blue-600 transition-colors leading-snug mb-2 flex-1">
             {article.title}
           </h2>
-          <p className="text-xs text-neutral-400 line-clamp-2 mb-4 leading-relaxed">
+          <p className="text-xs text-neutral-500 line-clamp-2 mb-4 leading-relaxed">
             {article.description}
           </p>
           <div className="flex items-center gap-2 text-xs text-neutral-400 mt-auto pt-3 border-t border-neutral-100">
@@ -59,7 +59,7 @@ export default function ArticleCard({ article, featured = false }: Props) {
           <h2 className="text-[15px] font-semibold text-neutral-900 group-hover:text-blue-600 transition-colors leading-snug">
             {article.title}
           </h2>
-          <p className="text-xs text-neutral-400 line-clamp-1 mt-1 leading-relaxed hidden sm:block">
+          <p className="text-xs text-neutral-500 line-clamp-1 mt-1 leading-relaxed hidden sm:block">
             {article.description}
           </p>
         </div>

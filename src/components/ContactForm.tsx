@@ -17,9 +17,7 @@ export default function ContactForm() {
   });
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,7 +37,7 @@ export default function ContactForm() {
         <p className="text-sm text-neutral-500 leading-relaxed">
           お問い合わせありがとうございます。
           <br />
-          3営業日以内にご返信します。
+          内容を確認し、必要に応じて返信します。
         </p>
         <button
           onClick={() => setState("idle")}
@@ -54,10 +52,7 @@ export default function ContactForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div>
-        <label
-          htmlFor="name"
-          className="block text-sm font-medium text-neutral-700 mb-1.5"
-        >
+        <label htmlFor="name" className="block text-sm font-medium text-neutral-700 mb-1.5">
           お名前 <span className="text-neutral-300">*</span>
         </label>
         <input
@@ -73,10 +68,7 @@ export default function ContactForm() {
       </div>
 
       <div>
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium text-neutral-700 mb-1.5"
-        >
+        <label htmlFor="email" className="block text-sm font-medium text-neutral-700 mb-1.5">
           メールアドレス <span className="text-neutral-300">*</span>
         </label>
         <input
@@ -86,38 +78,27 @@ export default function ContactForm() {
           required
           value={form.email}
           onChange={handleChange}
-          placeholder="taro@university.ac.jp"
+          placeholder="taro@example.com"
           className={inputClass}
         />
       </div>
 
       <div>
-        <label
-          htmlFor="category"
-          className="block text-sm font-medium text-neutral-700 mb-1.5"
-        >
+        <label htmlFor="category" className="block text-sm font-medium text-neutral-700 mb-1.5">
           お問い合わせの種類
         </label>
-        <select
-          id="category"
-          name="category"
-          value={form.category}
-          onChange={handleChange}
-          className={inputClass}
-        >
+        <select id="category" name="category" value={form.category} onChange={handleChange} className={inputClass}>
           <option value="">選択してください</option>
           <option value="article">記事内容について</option>
           <option value="request">記事リクエスト</option>
           <option value="error">誤字・誤情報の報告</option>
+          <option value="collaboration">掲載・コラボ相談</option>
           <option value="other">その他</option>
         </select>
       </div>
 
       <div>
-        <label
-          htmlFor="message"
-          className="block text-sm font-medium text-neutral-700 mb-1.5"
-        >
+        <label htmlFor="message" className="block text-sm font-medium text-neutral-700 mb-1.5">
           メッセージ <span className="text-neutral-300">*</span>
         </label>
         <textarea
@@ -127,7 +108,7 @@ export default function ContactForm() {
           rows={5}
           value={form.message}
           onChange={handleChange}
-          placeholder="お気軽にどうぞ"
+          placeholder="お問い合わせ内容をご記入ください"
           className={`${inputClass} resize-none`}
         />
       </div>

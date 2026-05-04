@@ -28,37 +28,23 @@ export default async function CategoryPage({ params }: Props) {
   const articles = getArticlesByCategory(slug);
 
   return (
-    <div className="max-w-3xl mx-auto px-5 py-10">
+    <div className="max-w-4xl mx-auto px-5 py-10">
       <nav className="text-xs text-neutral-400 mb-8 flex items-center gap-1.5">
-        <Link
-          href="/"
-          className="hover:text-neutral-900 transition-colors"
-        >
-          ホーム
-        </Link>
+        <Link href="/" className="hover:text-neutral-900 transition-colors">ホーム</Link>
         <span>/</span>
-        <Link
-          href="/categories"
-          className="hover:text-neutral-900 transition-colors"
-        >
-          カテゴリ
-        </Link>
+        <Link href="/categories" className="hover:text-neutral-900 transition-colors">カテゴリ</Link>
         <span>/</span>
-        <span className="text-neutral-600 font-medium">
-          {category.name}
-        </span>
+        <span className="text-neutral-600 font-medium">{category.name}</span>
       </nav>
 
       <div className="mb-8">
-        <span
-          className={`inline-block text-[11px] font-semibold px-2 py-0.5 mb-3 ${category.color}`}
-        >
+        <span className={`inline-block text-[11px] font-semibold px-2 py-0.5 mb-3 ${category.color}`}>
           {category.name}
         </span>
         <h1 className="text-xl font-bold text-neutral-900 mb-1">
           {category.name}の記事
         </h1>
-        <p className="text-sm text-neutral-400">
+        <p className="text-sm text-neutral-500">
           {category.description} &middot; {articles.length}件
         </p>
       </div>
@@ -81,10 +67,7 @@ export default async function CategoryPage({ params }: Props) {
       )}
 
       <div className="mt-10 pt-6 border-t border-neutral-200">
-        <Link
-          href="/categories"
-          className="text-sm text-neutral-400 hover:text-neutral-900 transition-colors font-medium"
-        >
+        <Link href="/categories" className="text-sm text-neutral-500 hover:text-neutral-900 transition-colors font-medium">
           ← カテゴリ一覧に戻る
         </Link>
       </div>

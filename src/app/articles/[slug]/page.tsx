@@ -21,6 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const article = getArticleBySlug(slug);
   if (!article) return {};
+
   return {
     title: article.title,
     description: article.description,
@@ -31,6 +32,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: "article",
       publishedTime: article.publishedAt,
       modifiedTime: article.updatedAt ?? article.publishedAt,
+      url: `/articles/${article.slug}`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.description,
     },
   };
 }
@@ -43,9 +50,16 @@ function formatDate(dateStr: string): string {
   });
 }
 
-function extractHeadings(
-  content: string
-): { text: string; id: string }[] {
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function extractHeadings(content: string): { text: string; id: string }[] {
   const matches = content.match(/^## (.+)$/gm);
   if (!matches) return [];
   return matches.map((m, i) => ({
@@ -54,36 +68,55 @@ function extractHeadings(
   }));
 }
 
+function renderInline(value: string): string {
+  return escapeHtml(value)
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/`([^`]+)`/g, "<code>$1</code>");
+}
+
 function renderMarkdown(content: string): string {
   let h2i = 0;
-  return content
-    .trim()
-    .replace(/^## (.+)$/gm, (_, t) => `<h2 id="section-${h2i++}">${t}</h2>`)
-    .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/`([^`]+)`/g, "<code>$1</code>")
-    .replace(/```[\w]*\n([\s\S]*?)```/g, "<pre><code>$1</code></pre>")
-    .replace(/^\|[-\s:|]+\|$/gm, "")
-    .replace(/^\| (.+) \|$/gm, (_, row) => {
-      const cells = row
-        .split(" | ")
-        .map((c: string) => `<td>${c.trim()}</td>`)
-        .join("");
-      return `<tr>${cells}</tr>`;
-    })
-    .replace(/(<tr>[\s\S]*?<\/tr>)/g, (m) =>
-      m.includes("---") ? "" : m
-    )
-    .replace(/(<tr>.*<\/tr>\s*)+/g, (m) => `<table>${m}</table>`)
-    .replace(/^---+$/gm, "<hr/>")
-    .replace(/^- (.+)$/gm, "<li>$1</li>")
-    .replace(/(<li>.*<\/li>\s*)+/g, (m) => `<ul>${m}</ul>`)
-    .replace(/^\d+\. (.+)$/gm, "<li>$1</li>")
-    .split(/\n\n+/)
+  const blocks = content.trim().split(/\n\n+/);
+
+  return blocks
     .map((block) => {
-      if (/^<(h[23]|ul|ol|pre|table|blockquote|hr)/.test(block))
-        return block;
-      return `<p>${block.replace(/\n/g, "<br/>")}</p>`;
+      if (block.startsWith("## ")) {
+        const title = renderInline(block.replace(/^## /, ""));
+        return `<h2 id="section-${h2i++}">${title}</h2>`;
+      }
+      if (block.startsWith("### ")) {
+        return `<h3>${renderInline(block.replace(/^### /, ""))}</h3>`;
+      }
+      if (block.includes("\n|") || block.startsWith("|")) {
+        const rows = block
+          .split("\n")
+          .filter((line) => line.startsWith("|") && !/^\|[-\s:|]+\|$/.test(line))
+          .map((line) => {
+            const cells = line
+              .split("|")
+              .slice(1, -1)
+              .map((cell) => `<td>${renderInline(cell.trim())}</td>`)
+              .join("");
+            return `<tr>${cells}</tr>`;
+          })
+          .join("");
+        return `<table>${rows}</table>`;
+      }
+      if (block.split("\n").every((line) => line.startsWith("- "))) {
+        const items = block
+          .split("\n")
+          .map((line) => `<li>${renderInline(line.replace(/^- /, ""))}</li>`)
+          .join("");
+        return `<ul>${items}</ul>`;
+      }
+      if (block.split("\n").every((line) => /^\d+\. /.test(line))) {
+        const items = block
+          .split("\n")
+          .map((line) => `<li>${renderInline(line.replace(/^\d+\. /, ""))}</li>`)
+          .join("");
+        return `<ol>${items}</ol>`;
+      }
+      return `<p>${renderInline(block).replace(/\n/g, "<br/>")}</p>`;
     })
     .join("\n");
 }
@@ -102,37 +135,22 @@ export default async function ArticlePage({ params }: Props) {
         .slice(0, 3);
 
   return (
-    <div className="max-w-3xl mx-auto px-5 py-10">
+    <div className="max-w-4xl mx-auto px-5 py-10">
       <div className="max-w-2xl mx-auto">
-        {/* Breadcrumb */}
         <nav className="text-xs text-neutral-400 mb-8 flex items-center gap-1.5">
-          <Link
-            href="/"
-            className="hover:text-neutral-900 transition-colors"
-          >
-            ホーム
-          </Link>
+          <Link href="/" className="hover:text-neutral-900 transition-colors">ホーム</Link>
           <span>/</span>
-          <Link
-            href="/articles"
-            className="hover:text-neutral-900 transition-colors"
-          >
-            記事一覧
-          </Link>
+          <Link href="/articles" className="hover:text-neutral-900 transition-colors">記事一覧</Link>
           {category && (
             <>
               <span>/</span>
-              <Link
-                href={`/categories/${category.slug}`}
-                className="hover:text-neutral-900 transition-colors"
-              >
+              <Link href={`/categories/${category.slug}`} className="hover:text-neutral-900 transition-colors">
                 {category.name}
               </Link>
             </>
           )}
         </nav>
 
-        {/* Article header */}
         <header className="mb-8 pb-8 border-b border-neutral-200">
           <div className="mb-3">
             <CategoryBadge categorySlug={article.category} />
@@ -144,15 +162,12 @@ export default async function ArticlePage({ params }: Props) {
             {article.description}
           </p>
           <div className="flex items-center gap-3 text-xs text-neutral-400">
-            <time dateTime={article.publishedAt}>
-              {formatDate(article.publishedAt)}
-            </time>
+            <time dateTime={article.publishedAt}>{formatDate(article.publishedAt)}</time>
             <span>&middot;</span>
             <span>{article.readTime}分で読める</span>
           </div>
         </header>
 
-        {/* TOC */}
         {headings.length > 2 && (
           <nav className="border border-neutral-200 p-5 mb-10">
             <p className="text-[11px] font-semibold text-neutral-400 uppercase tracking-widest mb-3">
@@ -161,10 +176,7 @@ export default async function ArticlePage({ params }: Props) {
             <ol className="space-y-1.5">
               {headings.map((h, i) => (
                 <li key={h.id}>
-                  <a
-                    href={`#${h.id}`}
-                    className="text-sm text-neutral-500 hover:text-neutral-900 transition-colors"
-                  >
+                  <a href={`#${h.id}`} className="text-sm text-neutral-500 hover:text-neutral-900 transition-colors">
                     {i + 1}. {h.text}
                   </a>
                 </li>
@@ -173,28 +185,20 @@ export default async function ArticlePage({ params }: Props) {
           </nav>
         )}
 
-        {/* Article body */}
         <article
           className="prose-article"
-          dangerouslySetInnerHTML={{
-            __html: renderMarkdown(article.content),
-          }}
+          dangerouslySetInnerHTML={{ __html: renderMarkdown(article.content) }}
         />
 
-        {/* Tags */}
         <div className="mt-10 pt-6 border-t border-neutral-200 flex flex-wrap gap-2">
           {article.tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-xs text-neutral-400 font-medium px-2 py-0.5 border border-neutral-200"
-            >
+            <span key={tag} className="text-xs text-neutral-500 font-medium px-2 py-0.5 border border-neutral-200">
               {tag}
             </span>
           ))}
         </div>
       </div>
 
-      {/* Related articles */}
       {related.length > 0 && (
         <section className="max-w-2xl mx-auto mt-12 pt-8 border-t border-neutral-200">
           <h2 className="text-[11px] font-semibold text-neutral-400 uppercase tracking-widest mb-5">
@@ -209,10 +213,7 @@ export default async function ArticlePage({ params }: Props) {
       )}
 
       <div className="max-w-2xl mx-auto mt-10 pt-6 border-t border-neutral-200 text-center">
-        <Link
-          href="/articles"
-          className="text-sm text-neutral-400 hover:text-neutral-900 transition-colors font-medium"
-        >
+        <Link href="/articles" className="text-sm text-neutral-500 hover:text-neutral-900 transition-colors font-medium">
           ← 記事一覧に戻る
         </Link>
       </div>

@@ -4,31 +4,40 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 const siteUrl = "https://gakuseiouenn.net";
+const siteName = "大学生AI活用ラボ";
+const description =
+  "大学生がChatGPTやAIツールを勉強・レポート・就活に安全に活用するための実践ブログ。";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "大学生AI活用ラボ | ChatGPT・AI×学習・就活を徹底解説",
-    template: "%s | 大学生AI活用ラボ",
+    default: `${siteName} | ChatGPTとAIツールを大学生活に活かす`,
+    template: `%s | ${siteName}`,
   },
-  description:
-    "大学生がAIを正しく・賢く活用するための実践的な情報を発信。ChatGPT活用術、AI×勉強法、AI×就活対策、おすすめAIツールレビューなど、今すぐ使える情報が満載。",
-  keywords: ["大学生", "AI", "ChatGPT", "Claude", "勉強", "就活", "レポート", "AI活用"],
-  authors: [{ name: "大学生AI活用ラボ編集部" }],
-  creator: "大学生AI活用ラボ",
+  description,
+  keywords: [
+    "大学生",
+    "AI活用",
+    "ChatGPT",
+    "レポート",
+    "就活",
+    "AIツール",
+    "プロンプト",
+  ],
+  authors: [{ name: siteName }],
+  creator: siteName,
   openGraph: {
     type: "website",
     locale: "ja_JP",
     url: siteUrl,
-    siteName: "大学生AI活用ラボ",
-    title: "大学生AI活用ラボ | ChatGPT・AI×学習・就活を徹底解説",
-    description:
-      "大学生がAIを正しく・賢く活用するための実践的な情報を発信。ChatGPT活用術、AI×勉強法、AI×就活対策など。",
+    siteName,
+    title: `${siteName} | ChatGPTとAIツールを大学生活に活かす`,
+    description,
   },
   twitter: {
     card: "summary_large_image",
-    title: "大学生AI活用ラボ",
-    description: "大学生がAIを正しく・賢く活用するための実践情報メディア",
+    title: siteName,
+    description,
   },
   robots: {
     index: true,
