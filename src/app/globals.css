@@ -49,6 +49,18 @@ body {
   margin-bottom: 1.25rem;
 }
 
+.prose-article a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+
+.prose-article a:hover {
+  color: #1d4ed8;
+}
+
 .prose-article ul,
 .prose-article ol {
   padding-left: 1.5rem;
