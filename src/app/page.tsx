@@ -6,6 +6,28 @@ import ArticleCard from "@/components/ArticleCard";
 export default function Home() {
   const featured = getFeaturedArticles();
   const latest = getAllArticles().slice(0, 5);
+  const purposeLinks = [
+    {
+      label: "レポートでAIを使いたい",
+      desc: "テーマ決め、情報収集、構成作りから安全に始める",
+      href: "/articles/ai-report-research-workflow",
+    },
+    {
+      label: "就活準備に使いたい",
+      desc: "ESを書く前の経験整理と面接練習に使う",
+      href: "/articles/ai-job-hunting-es",
+    },
+    {
+      label: "無料版で十分か知りたい",
+      desc: "ChatGPT無料版でできることと課金判断を整理する",
+      href: "/articles/chatgpt-free-plan-students",
+    },
+    {
+      label: "AIツールを比較したい",
+      desc: "ChatGPT、Claude、Canva、Claude Codeを使い分ける",
+      href: "/articles/best-ai-tools-for-students",
+    },
+  ];
 
   return (
     <>
@@ -50,6 +72,33 @@ export default function Home() {
 
       <div className="max-w-4xl mx-auto px-5 py-14 space-y-16">
         <section>
+          <div className="mb-6">
+            <h2 className="text-[11px] font-semibold text-neutral-400 uppercase tracking-[0.15em] mb-2">
+              目的別に探す
+            </h2>
+            <p className="text-sm text-neutral-500">
+              今やりたいことから、読む記事を選べます。
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {purposeLinks.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="group rounded-[6px] border border-neutral-200 bg-white p-4 hover:border-blue-200 hover:bg-blue-50/40 transition-colors"
+              >
+                <p className="text-sm font-semibold text-neutral-900 group-hover:text-blue-700 transition-colors">
+                  {item.label}
+                </p>
+                <p className="mt-1 text-xs text-neutral-500 leading-relaxed">
+                  {item.desc}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section>
           <div className="flex items-baseline justify-between mb-6">
             <h2 className="text-[11px] font-semibold text-neutral-400 uppercase tracking-[0.15em]">
               注目の記事
@@ -66,9 +115,14 @@ export default function Home() {
         </section>
 
         <section>
-          <h2 className="text-[11px] font-semibold text-neutral-400 uppercase tracking-[0.15em] mb-5">
-            カテゴリ
-          </h2>
+          <div className="mb-5">
+            <h2 className="text-[11px] font-semibold text-neutral-400 uppercase tracking-[0.15em] mb-2">
+              カテゴリ
+            </h2>
+            <p className="text-sm text-neutral-500">
+              レポート、就活、ツール比較など、テーマごとに整理しています。
+            </p>
+          </div>
           <div className="flex flex-wrap gap-2">
             {categories.map((cat) => (
               <Link

@@ -50,11 +50,27 @@ export default async function CategoryPage({ params }: Props) {
       </div>
 
       {articles.length > 0 ? (
-        <div className="divide-y divide-neutral-100">
-          {articles.map((article) => (
-            <ArticleCard key={article.slug} article={article} />
-          ))}
-        </div>
+        <>
+          <section className="mb-10">
+            <h2 className="text-[11px] font-semibold text-neutral-400 uppercase tracking-[0.15em] mb-5">
+              このカテゴリでまず読むなら
+            </h2>
+            <ArticleCard article={articles[0]} featured />
+          </section>
+
+          {articles.length > 1 && (
+            <section>
+              <h2 className="text-[11px] font-semibold text-neutral-400 uppercase tracking-[0.15em] mb-2">
+                関連する記事
+              </h2>
+              <div className="divide-y divide-neutral-100">
+                {articles.slice(1).map((article) => (
+                  <ArticleCard key={article.slug} article={article} />
+                ))}
+              </div>
+            </section>
+          )}
+        </>
       ) : (
         <div className="py-16 text-center">
           <p className="text-sm text-neutral-500 mb-1">
