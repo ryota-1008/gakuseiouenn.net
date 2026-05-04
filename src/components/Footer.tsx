@@ -17,7 +17,6 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li><Link href="/articles" className="text-neutral-500 hover:text-neutral-900 transition-colors">記事一覧</Link></li>
               <li><Link href="/categories" className="text-neutral-500 hover:text-neutral-900 transition-colors">カテゴリ</Link></li>
-              <li><Link href="/growth" className="text-neutral-500 hover:text-neutral-900 transition-colors">SNS・収益化計画</Link></li>
             </ul>
           </div>
 

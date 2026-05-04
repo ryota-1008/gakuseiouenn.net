@@ -31,10 +31,10 @@ export default function Home() {
               記事を読む
             </Link>
             <Link
-              href="/growth"
+              href="/categories"
               className="text-sm text-neutral-600 hover:text-neutral-900 font-medium transition-colors"
             >
-              SNS・収益化計画を見る →
+              カテゴリから探す →
             </Link>
           </div>
         </div>
@@ -88,18 +88,18 @@ export default function Home() {
         <section className="border-t border-neutral-200 pt-8 grid gap-6 sm:grid-cols-[1.4fr_1fr]">
           <div>
             <p className="text-sm font-semibold text-neutral-900 mb-1">
-              SNSと検索の両方で育てるブログへ
+              記事は随時アップデートします
             </p>
             <p className="text-xs text-neutral-500 leading-relaxed max-w-xl">
-              記事を公開して終わりにせず、X・Instagram・TikTok・YouTube Shorts向けに要点を再編集し、
-              検索流入とSNS流入を両方積み上げる運用を目指します。
+              AIツールの仕様や料金は変わりやすいため、古くなった情報は確認しながら更新していきます。
+              気づいた点があればお問い合わせからお知らせください。
             </p>
           </div>
           <Link
-            href="/growth"
+            href="/contact"
             className="text-xs font-semibold text-neutral-600 hover:text-neutral-900 transition-colors sm:text-right"
           >
-            運用ロードマップ →
+            お問い合わせ →
           </Link>
         </section>
       </div>

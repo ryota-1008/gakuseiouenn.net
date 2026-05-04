@@ -7,7 +7,6 @@ import { useState } from "react";
 const navLinks = [
   { href: "/articles", label: "記事" },
   { href: "/categories", label: "カテゴリ" },
-  { href: "/growth", label: "運用計画" },
   { href: "/about", label: "運営者" },
 ];
 
