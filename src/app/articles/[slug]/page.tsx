@@ -125,6 +125,59 @@ function renderMarkdown(content: string): string {
     .join("\n");
 }
 
+function getArticleTakeaways(slug: string): string[] {
+  const takeaways: Record<string, string[]> = {
+    "best-ai-tools-for-students": [
+      "大学生が最初に使いやすいAIツールの選び方",
+      "ChatGPT、Canva、Claude Codeなどの向いている作業",
+      "課金や専門ツールを検討するタイミング",
+    ],
+    "chatgpt-free-plan-students": [
+      "ChatGPT無料版で十分な大学生活の作業",
+      "Claudeなどに課金する価値を感じやすい場面",
+      "大学1〜2年生が無理なくAIを使い始める考え方",
+    ],
+    "ai-report-writing-comparison": [
+      "レポート作成でAIに任せやすい作業と危ない作業",
+      "ChatGPT、Claude、Geminiの使い分け",
+      "本文丸投げを避けて、自分の考えを残す進め方",
+    ],
+    "chatgpt-daigaku-barelu": [
+      "AIレポートで大学生が特に注意すべきポイント",
+      "バレる・バレないより大切な大学ルールの確認",
+      "安全に使うための具体的な使い方",
+    ],
+    "ai-report-research-workflow": [
+      "AIで論点やキーワードを整理する手順",
+      "Google検索と大学図書館を組み合わせる方法",
+      "参考文献や反対意見を探すときの注意点",
+    ],
+    "ai-job-hunting-es": [
+      "ESを書く前に整理しておきたい経験",
+      "自分の強みやガクチカを深掘りする方法",
+      "読者自身の貴重な体験を生かすAIの使い方",
+    ],
+    "chatgpt-report-outline": [
+      "大学レポートの構成をChatGPTで作る流れ",
+      "論点、反対意見、参考文献探しに使える聞き方",
+      "本文を丸投げせず、自分の考えを残すコツ",
+    ],
+    "ai-interview-practice": [
+      "AIで面接練習を始める前の準備",
+      "想定質問と深掘り質問を出してもらう方法",
+      "作った回答を自分の言葉に戻すポイント",
+    ],
+  };
+
+  return (
+    takeaways[slug] ?? [
+      "この記事のテーマで押さえるべき基本",
+      "大学生活の中で使える具体的な手順",
+      "AIに任せすぎないための注意点",
+    ]
+  );
+}
+
 export default async function ArticlePage({ params }: Props) {
   const { slug } = await params;
   const article = getArticleBySlug(slug);
@@ -132,6 +185,7 @@ export default async function ArticlePage({ params }: Props) {
 
   const category = getCategoryBySlug(article.category);
   const headings = extractHeadings(article.content);
+  const takeaways = getArticleTakeaways(article.slug);
   const related = article.relatedSlugs
     ? getArticlesBySlugs(article.relatedSlugs)
     : getArticlesByCategory(article.category)
@@ -172,8 +226,22 @@ export default async function ArticlePage({ params }: Props) {
           </div>
         </header>
 
+        <section className="mb-8 rounded-[6px] border border-blue-100 bg-blue-50/60 p-5">
+          <p className="text-[11px] font-semibold text-blue-700 uppercase tracking-[0.15em] mb-3">
+            この記事でわかること
+          </p>
+          <ul className="space-y-2">
+            {takeaways.map((item) => (
+              <li key={item} className="flex gap-2 text-sm text-neutral-700 leading-relaxed">
+                <span className="mt-[0.55em] h-1.5 w-1.5 rounded-full bg-blue-600 flex-shrink-0" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
         {headings.length > 2 && (
-          <nav className="border border-neutral-200 p-5 mb-10">
+          <nav className="border border-neutral-200 rounded-[6px] p-5 mb-10">
             <p className="text-[11px] font-semibold text-neutral-400 uppercase tracking-widest mb-3">
               目次
             </p>

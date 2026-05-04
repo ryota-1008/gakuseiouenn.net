@@ -20,7 +20,7 @@ export default function Home() {
             実践ベースでわかりやすく。
           </h1>
           <p className="text-neutral-600 text-[15px] sm:text-base leading-relaxed max-w-2xl mb-8">
-            ChatGPT、Claude、Geminiなどを、レポート・ゼミ・就活・プログラミングにどう使うか。
+            ChatGPT、Claude、Geminiなどを、レポート・就活・発表・開発インターンにどう使うか。
             便利さだけでなく、引用確認や大学のルールも含めて整理します。
           </p>
           <div className="flex flex-wrap items-center gap-4">
@@ -36,6 +36,14 @@ export default function Home() {
             >
               カテゴリから探す →
             </Link>
+          </div>
+          <div className="mt-8 max-w-2xl border-l-2 border-blue-600 pl-4">
+            <p className="text-xs font-semibold text-neutral-900 mb-1">
+              理工学部の大学生が、実際に使いながら書いています。
+            </p>
+            <p className="text-sm text-neutral-600 leading-relaxed">
+              ChatGPT無料版、Claude課金、Canva、Claude Codeなどを、課題・就活準備・開発インターンの中で試した感覚も混ぜて整理しています。
+            </p>
           </div>
         </div>
       </section>

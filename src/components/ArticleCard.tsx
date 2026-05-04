@@ -29,7 +29,7 @@ export default function ArticleCard({ article, featured = false }: Props) {
   if (featured) {
     return (
       <Link href={`/articles/${article.slug}`} className="group block h-full">
-        <article className={`bg-white border border-neutral-200 border-t-[3px] ${topBorder} hover:shadow-sm transition-all h-full flex flex-col p-5`}>
+        <article className={`bg-white border border-neutral-200 border-t-[3px] ${topBorder} rounded-[6px] hover:-translate-y-0.5 hover:shadow-sm transition-all h-full flex flex-col p-5`}>
           <div className="mb-3">
             <CategoryBadge categorySlug={article.category} linkable={false} />
           </div>
@@ -43,6 +43,9 @@ export default function ArticleCard({ article, featured = false }: Props) {
             <time dateTime={article.publishedAt}>{formatDate(article.publishedAt)}</time>
             <span>&middot;</span>
             <span>{article.readTime}分</span>
+            <span className="ml-auto text-neutral-500 group-hover:text-blue-600 transition-colors">
+              読む →
+            </span>
           </div>
         </article>
       </Link>
@@ -51,7 +54,7 @@ export default function ArticleCard({ article, featured = false }: Props) {
 
   return (
     <Link href={`/articles/${article.slug}`} className="group block">
-      <article className="py-4 flex items-start justify-between gap-4">
+      <article className="py-4 px-2 -mx-2 rounded-[6px] flex items-start justify-between gap-4 hover:bg-neutral-50 transition-colors">
         <div className="flex-1 min-w-0">
           <div className="mb-1">
             <CategoryBadge categorySlug={article.category} linkable={false} />
