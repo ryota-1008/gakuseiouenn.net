@@ -4,11 +4,17 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-const siteUrl = "https://gakuseiouenn.net";
+const siteUrl = "https://gakuseiouenn-net.vercel.app";
 const siteName = "大学生AI活用ラボ";
 const description =
   "大学生がChatGPTやAIツールを勉強・レポート・就活に安全に活用するための実践ブログ。";
 const gaId = process.env.NEXT_PUBLIC_GA_ID;
+const ogImage = {
+  url: "/og-image.jpeg",
+  width: 1200,
+  height: 630,
+  alt: "大学生AI活用ラボ",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -35,11 +41,13 @@ export const metadata: Metadata = {
     siteName,
     title: `${siteName} | ChatGPTとAIツールを大学生活に活かす`,
     description,
+    images: [ogImage],
   },
   twitter: {
     card: "summary_large_image",
     title: siteName,
     description,
+    images: [ogImage.url],
   },
   robots: {
     index: true,

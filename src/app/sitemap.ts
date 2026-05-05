@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { getAllArticles } from "@/lib/articles";
 import { categories } from "@/lib/categories";
 
-const BASE_URL = "https://gakuseiouenn.net";
+const BASE_URL = "https://gakuseiouenn-net.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const articles = getAllArticles();

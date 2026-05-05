@@ -13,7 +13,7 @@ import ArticleCard from "@/components/ArticleCard";
 
 type Props = { params: Promise<{ slug: string }> };
 
-const siteUrl = "https://gakuseiouenn.net";
+const siteUrl = "https://gakuseiouenn-net.vercel.app";
 const siteName = "大学生AI活用ラボ";
 
 export async function generateStaticParams() {
@@ -36,11 +36,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       publishedTime: article.publishedAt,
       modifiedTime: article.updatedAt ?? article.publishedAt,
       url: `/articles/${article.slug}`,
+      images: [
+        {
+          url: "/og-image.jpeg",
+          width: 1200,
+          height: 630,
+          alt: article.title,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: article.title,
       description: article.description,
+      images: ["/og-image.jpeg"],
     },
   };
 }
